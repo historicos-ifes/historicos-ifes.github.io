@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Histórico Joao</title>
+  <link href="./favicon.ico" rel="shortcut icon" type="image/vnd.microsoft.icon">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <link rel="stylesheet" href="./css/style.css">
+  <link rel="stylesheet" href="./css/loading.css">
+  <link rel="stylesheet" href="./ts/public/toastr.min.css">
+
+</head>
+
+<body>
+  <div id="divBtn">
+    <button id="btnTypePassword" type="button" class="btn btn-primary" data-toggle="modal" data-target="#typePassword"
+      data-whatever="@mdo">Salvar Histórico</button>
+    <button style="visibility:hidden" id="btnTypeUser" type="button" class="btn btn-primary" data-toggle="modal" data-target="#typeUser"
+      data-whatever="@mdo">Carregar Histórico</button>
+
+      
+    
+    
+  </div>
+
+
+  <div class="modal fade" id="typeUser" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-body">
+          <form id="form1" autocomplete="off">
+            <div class="form-group">
+              <label for="recipient-name" class="col-form-label">Usuário:</label>
+              <input type="text" class="form-control" id="user-load"
+                placeholder="Informe o usuário para carregar seu histórico" autofocus>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button id="close1" type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+          &nbsp;
+          <button id="btnCarregar" type="button" class="btn btn-primary ">Carregar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="typePassword" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-body">
+          <form id="form2" autocomplete="off">
+            <div class="form-group">
+              <label for="recipient-name" class="col-form-label">Senha:</label>
+              <input type="password" class="form-control" id="pssw-save"
+                placeholder="Informe a senha para salvar seu histórico" autofocus>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <div class="d-flex justify-content">
+            <input type="checkbox" class="form-check-input" id="showPass">
+            <label class="form-check-label" for="showPass">Mostrar Senha</label>
+          </div>
+          <div class="d-flex justify-content"></div>
+          <button id="close2" type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+          &nbsp;
+          <button id="btnSalvar" type="button" class="btn btn-primary ">Salvar</button>
+        </div>
+
+
+
+      </div>
+    </div>
+  </div>
+
+  <div id="loadAnimation" class="loading">Loading&#8230;</div>
+  <br>
+  <div style="text-align:center;" id="tbCntn" class="table-responsive-lg">
+    <table class="table">
+      <thead>
+        <tr id="periodosHeader">
+          
+        </tr>
+      </thead>
+      <tbody id="tabelaBody">
+        
+      </tbody>
+    </table>
+  </div>
+  <table>
+    <caption>Legenda das cores</caption>
+    <tr>
+      <td>
+        &nbsp;
+      </td>
+      <td>
+        <canvas id="legenda1" width="30px" height="30px"></canvas>
+      </td>
+      <td>
+        Cursando/Faltante
+      </td>
+      <td>
+        &nbsp;
+      </td>
+      <td>
+        <canvas id="legenda2" width="30px" height="30px"></canvas>
+      </td>
+      <td>
+        Feita
+      </td>
+    </tr>
+    
+  </table>
+
+  <!-- <table id="tbCntn" class="center">
+    <colgroup>
+      <col class="par" span="1" />
+      <col span="1" />
+      <col class="par" span="1" />
+      <col span="1" />
+      <col class="par" span="1" />
+      <col span="1" />
+      <col class="par" span="1" />
+      <col span="1" />
+    <thead>
+      <td>1º Período</td>
+      <td>2º Período</td>
+      <td>3º Período</td>
+      <td>4º Período</td>
+      <td>5º Período</td>
+      <td>6º Período</td>
+      <td>7º Período</td>
+      <td>8º Período</td>
+    </thead>
+    <tbody>
+      <tr id="rowMaterias1">
+
+      </tr>
+      <tr id="rowMaterias2">
+
+      </tr>
+      <tr id="rowMaterias3">
+
+      </tr>
+      <tr id="rowMaterias4">
+
+      </tr>
+      <tr id="rowMaterias5">
+
+      </tr>
+      <tr id="rowMaterias6">
+
+      </tr>
+
+      <tr id="rowMaterias7">
+
+      </tr>
+      <tr id="rowMaterias8">
+
+      </tr>
+    </tbody>
+  </table> -->
+
+  <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+    integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+    crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+    integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+    crossorigin="anonymous"></script>
+  <script src="./js/models/MateriaModel.js"></script>
+  <script src="./js/models/PeriodoModel.js"></script>
+  <script src="./js/controllers/PeriodoController.js"></script>
+  <script src="./js/controllers/MateriaController.js"></script>
+  <script src="./js/controllers/LinhaController.js"></script>
+  <script src="./js/models/LinhaModel.js"></script>
+  <script src="./js/controllers/HistoricoController.js"></script>
+  <script src="./ts/public/toastr.min.js"></script>
+  <script src="./js/app.js"></script>
+
+
+
+</body>
+
+</html>
