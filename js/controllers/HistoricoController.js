@@ -39,32 +39,47 @@ class HistoricoController {
     Init() {
         this._linhaController.Init();
     }
-    markAFeito(id) {
+    alterarEstado(id, novoEstadoId) {
         return __awaiter(this, void 0, void 0, function* () {
             var element = document.getElementById(id);
             var idNum = parseInt(id.split("mat")[1]);
-            var mudou = yield this.ChangeInObj(idNum);
+            var mudou = yield this.ChangeInObj(idNum, novoEstadoId);
             if (mudou) {
-                if (element.classList.contains("bg-success")) {
-                    element.classList.remove("bg-success");
-                    element.classList.add("bg-warning");
-                }
-                else {
-                    element.classList.remove("bg-warning");
-                    element.classList.add("bg-success");
+                switch (novoEstadoId) {
+                    case 1:
+                        if (element.classList.contains("bg-primary"))
+                            element.classList.remove("bg-primary");
+                        if (element.classList.contains("bg-success"))
+                            element.classList.remove("bg-success");
+                        if (!element.classList.contains("bg-warning"))
+                            element.classList.add("bg-warning");
+                        break;
+                    case 2:
+                        if (element.classList.contains("bg-warning"))
+                            element.classList.remove("bg-warning");
+                        if (element.classList.contains("bg-success"))
+                            element.classList.remove("bg-success");
+                        if (!element.classList.contains("bg-primary"))
+                            element.classList.add("bg-primary");
+                        break;
+                    case 3:
+                        if (element.classList.contains("bg-primary"))
+                            element.classList.remove("bg-primary");
+                        if (element.classList.contains("bg-warning"))
+                            element.classList.remove("bg-warning");
+                        if (!element.classList.contains("bg-success"))
+                            element.classList.add("bg-success");
+                        break;
                 }
             }
         });
     }
-    ChangeInObj(id) {
+    ChangeInObj(id, estadoId) {
         return __awaiter(this, void 0, void 0, function* () {
             for (let index = 0; index < this._materias.length; index++) {
                 const element = this._materias[index];
                 if (element.Id == id) {
-                    if (element.Feito == false)
-                        this._materias[index].Feito = true;
-                    else
-                        this._materias[index].Feito = false;
+                    this._materias[index].EstadoId = estadoId;
                     yield this.Update();
                     return true;
                 }
@@ -82,14 +97,14 @@ class HistoricoController {
                 },
                 data: JSON.stringify(this._materias),
                 success: function (result) {
-                    $('#close2').click();
+                    $("#close2").click();
                     toastr["success"]("Histórico salvo com sucesso!", "Sucesso");
                     hideLoading();
                 },
                 error: function (error) {
                     toastr["error"]("Senha incorreta!", "Erro");
                     hideLoading();
-                }
+                },
             });
         });
     }
@@ -99,7 +114,7 @@ class HistoricoController {
             this._usuario = null;
             yield $.getJSON(this._dataUrl, (data) => {
                 if (data) {
-                    data.forEach(user => {
+                    data.forEach((user) => {
                         if (user.USER == p) {
                             this._usuario = user.USER;
                             this._url = user.URL;
@@ -108,7 +123,7 @@ class HistoricoController {
                     hideLoading();
                     if (this._usuario != null) {
                         toastr["success"]("Dados carregados com sucesso! Aguarde um pouco que seu historico irá aparecer.", "Sucesso");
-                        $('#close1').click();
+                        $("#close1").click();
                         return;
                     }
                     else {
@@ -133,7 +148,7 @@ class HistoricoController {
             lst.push(`<th scope="col">${index}º Período</th>`);
         }
         var html = lst.join(" ");
-        document.querySelector('#periodosHeader').innerHTML = html;
+        document.querySelector("#periodosHeader").innerHTML = html;
     }
     insereElementosLinhas(num) {
         var lst = new Array();
@@ -141,6 +156,6 @@ class HistoricoController {
             lst.push(`<tr  id="rowMaterias${index}"></tr>`);
         }
         var html = lst.join(" ");
-        document.querySelector('#tabelaBody').innerHTML = html;
+        document.querySelector("#tabelaBody").innerHTML = html;
     }
 }

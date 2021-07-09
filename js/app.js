@@ -33,12 +33,37 @@ function main() {
         updateContent();
     });
 }
-function MarkAsFeito(param) {
+function alterarEstado(param) {
     return __awaiter(this, void 0, void 0, function* () {
-        console.log(param);
         var id = param.id;
-        yield controller.markAFeito(id);
+        if (id) {
+            var estadoIdAtual = getEstadoIdByClassName(param);
+            if (estadoIdAtual > 0) {
+                var nextEstado = getNextEstadoId(estadoIdAtual);
+                if (nextEstado > 0)
+                    yield controller.alterarEstado(id, getNextEstadoId(estadoIdAtual));
+            }
+        }
     });
+}
+function getNextEstadoId(estadoidAtual) {
+    switch (estadoidAtual) {
+        case 1:
+            return 2;
+        case 2:
+            return 3;
+        case 3:
+            return 1;
+    }
+}
+function getEstadoIdByClassName(el) {
+    if (el.classList.contains("bg-warning"))
+        return 1;
+    if (el.classList.contains("bg-primary"))
+        return 2;
+    if (el.classList.contains("bg-success"))
+        return 3;
+    return -1;
 }
 function setVisible(id, visible) {
     document.getElementById(id).style.display = visible ? 'block' : 'none';
@@ -115,11 +140,15 @@ function updateContent() {
 function drawCanvas() {
     var c1 = document.getElementById("legenda1");
     var c2 = document.getElementById("legenda2");
+    var c3 = document.getElementById("legenda3");
     var ctx1 = c1.getContext("2d");
     var ctx2 = c2.getContext("2d");
+    var ctx3 = c3.getContext("2d");
     ctx1.fillStyle = "#f0ad4e";
     ctx1.fillRect(0, 0, 30, 30);
     ctx2.fillStyle = "#5cb85c";
     ctx2.fillRect(0, 0, 30, 30);
+    ctx3.fillStyle = "#0275d8";
+    ctx3.fillRect(0, 0, 30, 30);
 }
 main();
