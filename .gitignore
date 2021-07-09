@@ -1,1 +1,12 @@
 node_modules/
+_config.yml
+ts/app.ts
+ts/configDb.json
+ts/controllers/HistoricoController.ts
+ts/controllers/LinhaController.ts
+ts/controllers/MateriaController.ts
+ts/controllers/PeriodoController.ts
+ts/models/LinhaModel.ts
+ts/models/MateriaModel.ts
+ts/models/PeriodoModel.ts
+tsconfig.json
