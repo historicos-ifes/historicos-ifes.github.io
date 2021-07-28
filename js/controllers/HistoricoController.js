@@ -17,9 +17,12 @@ class HistoricoController {
         this._qtdMaterias = 0;
         this._qtdPeriodos = 0;
     }
-    Setup() {
+    getMaterias() {
+        return this._materias;
+    }
+    Setup(location) {
         return __awaiter(this, void 0, void 0, function* () {
-            this._materias = yield this._materiaController.loadMaterias(this._url);
+            this._materias = yield this._materiaController.loadMaterias(this._url, location);
             this._qtdPeriodos = Math.max.apply(Math, this._materias.map(function (o) { return o.Periodo; }));
             this._qtdMaterias = Math.max.apply(Math, this._materias.map(function (o) { return o.Ordem; }));
             this.insereElementosPeriodos(this._qtdPeriodos);
@@ -39,6 +42,36 @@ class HistoricoController {
     Init() {
         this._linhaController.Init();
     }
+    VerificaDependencias(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return new Promise((resolve, reject) => {
+                const found = this._materias.find(x => x.Id == id);
+                if (found) {
+                    const foundMateria = found;
+                    const depend = foundMateria.Dependencias;
+                    if (depend.length > 0) {
+                        depend.forEach((matId, ind) => {
+                            if (this._materias.find(x => x.Id == matId && x.EstadoId == 3) != null) {
+                                if (ind == depend.length - 1) {
+                                    resolve(true);
+                                }
+                                return;
+                            }
+                            else {
+                                resolve(false);
+                            }
+                        });
+                    }
+                    else {
+                        resolve(true);
+                    }
+                }
+                else {
+                    resolve(false);
+                }
+            });
+        });
+    }
     alterarEstado(id, novoEstadoId) {
         return __awaiter(this, void 0, void 0, function* () {
             var element = document.getElementById(id);
@@ -46,27 +79,27 @@ class HistoricoController {
             var mudou = yield this.ChangeInObj(idNum, novoEstadoId);
             if (mudou) {
                 switch (novoEstadoId) {
-                    case 1:
+                    case 1: //Não concluída
                         if (element.classList.contains("bg-primary"))
                             element.classList.remove("bg-primary");
                         if (element.classList.contains("bg-success"))
                             element.classList.remove("bg-success");
-                        if (!element.classList.contains("bg-warning"))
-                            element.classList.add("bg-warning");
+                        if (!element.classList.contains("bg-danger"))
+                            element.classList.add("bg-danger");
                         break;
-                    case 2:
-                        if (element.classList.contains("bg-warning"))
-                            element.classList.remove("bg-warning");
+                    case 2: //Cursando
+                        if (element.classList.contains("bg-danger"))
+                            element.classList.remove("bg-danger");
                         if (element.classList.contains("bg-success"))
                             element.classList.remove("bg-success");
                         if (!element.classList.contains("bg-primary"))
                             element.classList.add("bg-primary");
                         break;
-                    case 3:
+                    case 3: //Concluída
                         if (element.classList.contains("bg-primary"))
                             element.classList.remove("bg-primary");
-                        if (element.classList.contains("bg-warning"))
-                            element.classList.remove("bg-warning");
+                        if (element.classList.contains("bg-danger"))
+                            element.classList.remove("bg-danger");
                         if (!element.classList.contains("bg-success"))
                             element.classList.add("bg-success");
                         break;
@@ -87,6 +120,25 @@ class HistoricoController {
             return false;
         });
     }
+    EditarMateria(materia) {
+        return __awaiter(this, void 0, void 0, function* () {
+            for (let index = 0; index < this._materias.length; index++) {
+                const element = this._materias[index];
+                if (element.Id == materia.Id) {
+                    this._materias[index].CargaHoraria = materia.CargaHoraria;
+                    this._materias[index].Dependencias = materia.Dependencias;
+                    this._materias[index].EstadoId = materia.EstadoId;
+                    this._materias[index].Ordem = materia.Ordem;
+                    this._materias[index].Periodo = materia.Periodo;
+                    this._materias[index].Titulo = materia.Titulo;
+                    yield this.Update();
+                    $('#btnTypePassword').click();
+                    return true;
+                }
+            }
+            return false;
+        });
+    }
     salvarHistorico(p) {
         return __awaiter(this, void 0, void 0, function* () {
             $.ajax({
@@ -99,12 +151,10 @@ class HistoricoController {
                 success: function (result) {
                     $("#close2").click();
                     toastr["success"]("Histórico salvo com sucesso!", "Sucesso");
-                    hideLoading();
                 },
                 error: function (error) {
                     toastr["error"]("Senha incorreta!", "Erro");
-                    hideLoading();
-                },
+                }
             });
         });
     }
@@ -114,13 +164,12 @@ class HistoricoController {
             this._usuario = null;
             yield $.getJSON(this._dataUrl, (data) => {
                 if (data) {
-                    data.forEach((user) => {
+                    data.forEach(user => {
                         if (user.USER == p) {
                             this._usuario = user.USER;
                             this._url = user.URL;
                         }
                     });
-                    hideLoading();
                     if (this._usuario != null) {
                         toastr["success"]("Dados carregados com sucesso! Aguarde um pouco que seu historico irá aparecer.", "Sucesso");
                         $("#close1").click();
@@ -129,15 +178,14 @@ class HistoricoController {
                     else {
                         this.usuarioFront = null;
                         this._usuario = null;
-                        toastr["error"]("Falha ao carregar seus dados!", "Erro");
+                        toastr["error"]("Falha ao carregar seus dados(1)!", "Erro");
                         return;
                     }
                 }
             }).fail(function () {
                 this.usuarioFront = null;
                 this._usuario = null;
-                toastr["error"]("Falha ao carregar seus dados!", "Erro");
-                hideLoading();
+                toastr["error"]("Falha ao carregar seus dados(2)!", "Erro");
                 return;
             });
         });

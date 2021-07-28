@@ -11,14 +11,18 @@ class MateriaController {
     get materias() {
         return this._materias;
     }
-    loadMaterias(url) {
+    loadMaterias(url, location) {
         return __awaiter(this, void 0, void 0, function* () {
             var res = null;
+            var ok = false;
             yield $.getJSON(url, function (data) {
                 res = data;
+                ok = data ? true : false;
                 return res;
             }).fail(function () {
-                toastr["error"]("Falha ao carregar matérias!", "Erro");
+                if (!ok) {
+                    toastr["error"]("Falha ao carregar matérias!", "Erro");
+                }
                 return res;
             });
             return res;

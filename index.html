@@ -5,28 +5,124 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Histórico Joao</title>
+  <title>Históricos</title>
   <link href="./favicon.ico" rel="shortcut icon" type="image/vnd.microsoft.icon">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
     integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
   <link rel="stylesheet" href="./css/style.css">
   <link rel="stylesheet" href="./css/loading.css">
-  <link rel="stylesheet" href="./ts/public/toastr.min.css">
+  <link rel="stylesheet" href="./public/toastr.min.css">
+  <script defer src="https://use.fontawesome.com/releases/v5.15.3/js/all.js" integrity="sha384-haqrlim99xjfMxRP6EWtafs0sB1WKcMdynwZleuUSwJR0mDeRYbhtY+KPMr+JL6f" crossorigin="anonymous"></script>
 
 </head>
 
 <body>
   <div id="divBtn">
-    <button id="btnTypePassword" type="button" class="btn btn-primary" data-toggle="modal" data-target="#typePassword"
-      data-whatever="@mdo">Salvar Histórico</button>
-    <button style="visibility:hidden" id="btnTypeUser" type="button" class="btn btn-primary" data-toggle="modal" data-target="#typeUser"
-      data-whatever="@mdo">Carregar Histórico</button>
+    <button id="btnTypePassword" type="button" class="btn btn-primary" data-toggle="modal" data-target="#typePassword">Salvar Histórico</button>
+    <button id="btnEditMateria" type="button" class="btn btn-secondary" data-toggle="modal" data-target="#editMateria">Editar Matéria</button>
 
+
+    <button style="visibility:hidden" id="btnTypeUser" type="button" class="btn btn-primary" data-toggle="modal" data-target="#typeUser">Carregar Histórico</button>
+    
       
     
     
   </div>
 
+  <div class="modal fade" id="addNewDepend" tabindex="-1" data-placement="middle" style="z-index: 999999;" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-body bg-dark">
+          <form id="form1" autocomplete="off">
+            <div class="form-group">
+              <select style="width: 100%;" class="form-control"  id="dropdownMaterias2">
+                <option id="0" selected readonly disabled value="0">Escolha uma matéria</option>
+              </select>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade bd-example-modal-lg" id="editMateria" style="z-index: 999998;" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-lg" >
+    <div class="modal-content">
+      <div class="modal-header">
+        
+        <h5 class="modal-title" id="editMateriaModalTitulo">Alterar Matéria</h5>
+      </div>
+
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-12">
+          <select style="width: 100%;" class="form-control"  id="dropdownMaterias">
+            <option id="0" selected readonly disabled value="0">Escolha uma matéria</option>
+          </select>
+          </div>
+        </div>
+        <hr>
+        <div id="alterarMateriaBodyWrapper">
+          <div class="row">
+            <div class="col-12">
+              <label for="recipient-name" class="col-form-label">Titulo:</label>
+                <input type="text" class="form-control" id="editTitulo">
+            </div>
+          </div>
+          
+          <div class="row">
+            <div class="col-4">
+              <label for="recipient-name" class="col-form-label">Carga Horária</label>
+                <input type="text" class="form-control" id="editCargaHoraria">
+            </div>
+            <div class="col-4">
+              <label for="recipient-name" class="col-form-label">Linha:</label>
+                <input type="text" class="form-control" id="editOrdem">
+            </div>
+            <div class="col-4">
+              <label for="recipient-name" class="col-form-label">Coluna:</label>
+                <input type="text" class="form-control" id="editPeriodo">
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-6">
+              <label for="recipient-name" class="col-form-label">Estado:</label>
+                <select title="Para alterar o Estado utilize a forma convencional, clicando nas matérias na grade." disabled="true" type="text" class="form-control" id="editEstado">
+                  <option value="0">Indefinido</option>
+                  <option value="1">Não Concluída</option>
+                  <option value="2">Cursando</option>
+                  <option value="3">Concluída</option>
+                </select>
+            </div>
+          </div>
+          <br>
+          <div class="row">
+            <div class="col-6">
+              <!-- <span style=" float: left;clear: none;" class="col-form-label align-middle float-left">Dependencias </span> -->
+              <span style="clear: none;" class="float-left align-middle">Dependências</i></span>
+            </div>
+            <div id="btnAddDepend" style="visibility: hidden;" title="Adicionar Dependência" class="col-6" >
+              <span id="addDepend" onclick="addDepend(this)" style="clear: none;" class="float-right align-middle"><i class="text-primary fas fa-plus-circle fa-lg"></i></span>
+            </div>
+            
+          </div>
+          <br>
+          <div id="listaDependenciasEdit">
+           
+          </div>
+        </div>
+        
+      </div>
+      <div class="modal-footer">
+        <button id="close3" type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+        &nbsp;
+        <button id="btnEditar"  type="button" class="btn btn-primary ">Salvar</button>
+      </div>
+    </div>
+  </div>
+</div>
 
   <div class="modal fade" id="typeUser" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
     aria-hidden="true">
@@ -128,7 +224,6 @@
     
   </table>
 
-
   <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
     crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
@@ -144,7 +239,7 @@
   <script src="./js/controllers/LinhaController.js"></script>
   <script src="./js/models/LinhaModel.js"></script>
   <script src="./js/controllers/HistoricoController.js"></script>
-  <script src="./ts/public/toastr.min.js"></script>
+  <script src="./public/toastr.min.js"></script>
   <script src="./js/app.js"></script>
 
 

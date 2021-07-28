@@ -19,7 +19,7 @@ class Linha {
         });
     }
     addColuna(materia) {
-        this.Colunas.push(`<td style="border: 1px solid black;vertical-align: middle;" onClick="alterarEstado(this)" id="mat${materia.Id}" class="${materia.EstadoId == 3 ? ' bg-success' : materia.EstadoId == 2 ? ' bg-primary' : ' bg-warning'}"><p class="no_selection"><strong>${materia.Titulo}</strong></p></td>`);
+        this.Colunas.push(`<td style="border: 1px solid black;vertical-align: middle;" onClick="alterarEstado(this)" id="mat${materia.Id}" class="${materia.EstadoId == 3 ? ' bg-success' : materia.EstadoId == 2 ? ' bg-primary' : ' bg-danger'}"><p class="no_selection"><strong>${materia.Titulo}</strong></p></td>`);
     }
     addVazio() {
         this.Colunas.push(`
