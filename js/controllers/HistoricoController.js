@@ -190,6 +190,26 @@ class HistoricoController {
             });
         });
     }
+    checkUser(p) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let exists = false;
+            yield $.getJSON(this._dataUrl, (data) => {
+                if (data) {
+                    data.forEach(user => {
+                        if (user.USER == p) {
+                            exists = true;
+                        }
+                    });
+                }
+                else {
+                    exists = false;
+                }
+            }).fail(function () {
+                exists = false;
+            });
+            return exists;
+        });
+    }
     insereElementosPeriodos(num) {
         var lst = new Array();
         for (let index = 1; index <= num; index++) {

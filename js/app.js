@@ -24,7 +24,7 @@ toastr.options.hideEasing = "linear";
 toastr.options.showMethod = "fadeIn";
 toastr.options.hideMethod = "fadeOut";
 const controller = new HistoricoController();
-const debug = location.protocol == "file:" ? true : false;
+const debug = location.protocol.includes("file") ? true : false;
 var _materias;
 var materiaEditAtual = null;
 var loadedState = {
@@ -55,18 +55,42 @@ loadedState.registerListener(function (val) {
         $('#btnTypePassword').removeAttr('disabled');
     }
 });
-function main() {
+function getUser() {
     return __awaiter(this, void 0, void 0, function* () {
-        hideLoading();
-        hideContent();
-        drawCanvas();
         if (debug) {
             $('#user-load').val("joao-casagrande");
             $("#btnCarregar").click();
         }
         else {
-            $("#btnTypeUser").click();
+            const queryString = document.location.search;
+            const urlParams = new URLSearchParams(queryString);
+            const user = urlParams.get("user");
+            if (user) {
+                const exists = yield controller.checkUser(user);
+                if (exists) {
+                    toastr["success"](`Usuário '${user}' encontrado. Carregando dados..`);
+                    setTimeout(() => {
+                        $('#user-load').val(user);
+                        $("#btnCarregar").click();
+                    }, 1000);
+                }
+                else {
+                    toastr["warning"](`Usuário '${user}' inexistente. Insira manualmente o usuário.`);
+                    $("#btnTypeUser").click();
+                }
+            }
+            else {
+                $("#btnTypeUser").click();
+            }
         }
+    });
+}
+function main() {
+    return __awaiter(this, void 0, void 0, function* () {
+        hideLoading();
+        hideContent();
+        drawCanvas();
+        getUser();
         updateContent();
         setTimeout(function () {
         }, 2000);
@@ -186,7 +210,7 @@ function updateContent() {
     });
 }
 function drawCanvas() {
-    var cores = ["#f0ad4e", "#5cb85c", "#0275d8"];
+    var cores = ["#d9534f", "#5cb85c", "#0275d8"];
     cores.forEach((element, index) => {
         var canvas = document.getElementById(`legenda${index + 1}`);
         var ctx = canvas.getContext("2d");
@@ -272,12 +296,7 @@ $('#dropdownMaterias').on("change", function () {
             });
         }
         else {
-            el.html(`
-         <div class="card bg-secondary col-12" style="width:100%;">
-            <div class="card-body">
-                <p class="card-text text-white"><b>Essa matéria não possui dependências.</b></p>
-            </div>
-        </div>`);
+            setZeroDependenciesHtml();
         }
     }
     else {
@@ -461,6 +480,19 @@ $('#dropdownMaterias2').on("change", function () {
     $("#addNewDepend").modal('hide');
 });
 function removeDepend(_this) {
-    var a = _this;
+    var parent = _this.closest("div .row");
+    parent.remove();
+    var totalCount = $("#listaDependenciasEdit > div").length;
+    if (totalCount == 0)
+        setZeroDependenciesHtml();
+}
+function setZeroDependenciesHtml() {
+    var el = $('#listaDependenciasEdit');
+    el.html(`
+         <div class="card bg-secondary col-12" style="width:100%;">
+            <div class="card-body">
+                <p class="card-text text-white"><b>Essa matéria não possui dependências.</b></p>
+            </div>
+        </div>`);
 }
 main();
